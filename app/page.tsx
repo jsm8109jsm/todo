@@ -8,74 +8,53 @@ import { FieldValues, FormProvider, useForm } from "react-hook-form";
 import { useRecoilState, RecoilRoot } from "recoil";
 
 export default function Home() {
-  const isMounted = useRef(false);
   const [logList, setLogList] = useRecoilState(logListState);
-  const [todoList, setTodoList] = useRecoilState(todoListState);
-
-  useEffect(() => {
-    if (isMounted.current) {
-      const date = new Date();
-      setLogList((prev) => [
-        ...prev,
-        { date: date.toLocaleString(), list: todoList },
-      ]);
-    } else {
-      isMounted.current = true;
-    }
-  }, [todoList]);
 
   const { register, handleSubmit, setValue, ...methods } = useForm();
   const ref = useRef<HTMLInputElement | null>(null);
 
   return (
-    <RecoilRoot>
-      <FormProvider {...{ register, handleSubmit, setValue, ...methods }}>
-        <main className="flex gap-8">
-          <div>
-            <h1>!!!!!!TODO LIST!!!!!!</h1>
-            <TodoItem ref={ref} />
-          </div>
-          <div>
-            <h1>!!!!!!LOG!!!!!!</h1>
-            <div className="flex flex-col gap-4">
-              {logList.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="rounded-xl border-black border-2 p-2"
-                  >
-                    TODO LIST UPDATED
-                    <br />
-                    <span>{item.date}</span>
-                    <details>
-                      <summary>View Data</summary>
-                      {"["}
-                      <br />
-                      {item.list.map((item) => {
-                        return (
-                          <>
-                            &nbsp; &nbsp; {"{"}
-                            <br />
-                            <p>
-                              &nbsp; &nbsp; &nbsp; &nbsp;content: {item.content}
-                              <br />
-                              &nbsp; &nbsp; &nbsp; &nbsp;checked:{" "}
-                              {item.checked ? "true" : "false"}
-                            </p>
-                            &nbsp; &nbsp; {"},"}
-                          </>
-                        );
-                      })}
-                      <br />
-                      {"]"}
-                    </details>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </main>
-      </FormProvider>
-    </RecoilRoot>
+    <main className="flex gap-8">
+      <div>
+        <h1>!!!!!!TODO LIST!!!!!!</h1>
+        <TodoItem ref={ref} />
+      </div>
+      <div>
+        <h1>!!!!!!LOG!!!!!!</h1>
+        <div className="flex flex-col gap-4">
+          {logList.map((item, index) => {
+            return (
+              <div key={index} className="rounded-xl border-black border-2 p-2">
+                TODO LIST UPDATED
+                <br />
+                <span>{item.date}</span>
+                <details>
+                  <summary>View Data</summary>
+                  {"["}
+                  <br />
+                  {item.list.map((item) => {
+                    return (
+                      <>
+                        &nbsp; &nbsp; {"{"}
+                        <br />
+                        <p>
+                          &nbsp; &nbsp; &nbsp; &nbsp;content: {item.content}
+                          <br />
+                          &nbsp; &nbsp; &nbsp; &nbsp;checked:{" "}
+                          {item.checked ? "true" : "false"}
+                        </p>
+                        &nbsp; &nbsp; {"},"}
+                      </>
+                    );
+                  })}
+                  <br />
+                  {"]"}
+                </details>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </main>
   );
 }

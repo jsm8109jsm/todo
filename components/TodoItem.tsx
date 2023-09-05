@@ -1,18 +1,38 @@
 "use client";
 
+import { logListState } from "@/context/logList";
 import { todoListState } from "@/context/todoList";
-import React, { ForwardedRef, forwardRef, useState } from "react";
+import React, {
+  ForwardedRef,
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 
 const TodoItem = (ref: any) => {
-  const [todoList, setTodoList] =
-    useRecoilState<{ content: string; checked: boolean }[]>(todoListState);
+  const [todoList, setTodoList] = useRecoilState(todoListState);
+  const [logList, setLogList] = useRecoilState(logListState);
   const addTodo = (data: string) => {
     setTodoList((prev) => [...prev, { content: data, checked: false }]);
   };
   const { register, handleSubmit, setValue } = useForm();
-  console.log(ref);
+  const isMounted = useRef(false);
+  console.log(logList);
+
+  useEffect(() => {
+    // if (isMounted.current) {
+    const date = new Date();
+    setLogList((prev) => [
+      ...prev,
+      { date: date.toLocaleString(), list: todoList },
+    ]);
+    // } else {
+    //   isMounted.current = true;
+    // }
+  }, [todoList]);
 
   const deleteTodo = (index: number) => {
     setTodoList((prev) => prev.filter((_, i) => i !== index));
